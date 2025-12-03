@@ -2,7 +2,7 @@
 import json
 import azure.functions as func
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
+def http_sum_function(req: func.HttpRequest) -> func.HttpResponse:
     """
     Azure Function HTTP trigger that expects JSON payload with numeric fields 'a' and 'b'.
     Returns JSON: {"sum": <a+b>}
