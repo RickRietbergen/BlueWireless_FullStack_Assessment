@@ -1,47 +1,44 @@
-# q4 - answer here
-import json
 import azure.functions as func
+import json
 
-def main(req: func.HttpRequest) -> func.HttpResponse:
-    """
-    Azure Function HTTP trigger that expects JSON payload with numeric fields 'a' and 'b'.
-    Returns JSON: {"sum": <a+b>}
-    """
+app = func.FunctionApp()
 
-    # Try to load JSON from the request
+@app.function_name(name="http_sum_function")
+@app.route(route="http_sum_function", methods=["POST"])
+
+def http_sum_function(req: func.HttpRequest) -> func.HttpResponse:
+
+    # Try to load JSON
     try:
         data = req.get_json()
-    except ValueError:
+    except:
         return func.HttpResponse(
             json.dumps({"error": "Invalid JSON"}),
             status_code=400,
-            mimetype="application/json"
+            mimetype="application/json",
         )
 
-    # Validate input
+    # Check required fields
     if "a" not in data or "b" not in data:
         return func.HttpResponse(
             json.dumps({"error": "Please provide 'a' and 'b' in the JSON body"}),
             status_code=400,
-            mimetype="application/json"
+            mimetype="application/json",
         )
 
-    a = data["a"]
-    b = data["b"]
-
-    # Ensure both inputs are numeric
+    # Attempt to sum values
     try:
-        result = a + b
-    except TypeError:
+        result = data["a"] + data["b"]
+    except:
         return func.HttpResponse(
             json.dumps({"error": "'a' and 'b' must be numbers"}),
             status_code=400,
-            mimetype="application/json"
+            mimetype="application/json",
         )
 
-    # Return result as JSON
+    # Return result
     return func.HttpResponse(
         json.dumps({"sum": result}),
         status_code=200,
-        mimetype="application/json"
+        mimetype="application/json",
     )
